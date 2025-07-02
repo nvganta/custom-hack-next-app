@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Section from "../common/section";
 
 export default function ResendEmailForm() {
   const [isLoading, setIsLoading] = useState(false);
@@ -33,7 +34,7 @@ export default function ResendEmailForm() {
   };
 
   return (
-    <form className="flex flex-row gap-4" onSubmit={handleSubmit}>
+    <Section as="form" title="Resend" onSubmit={handleSubmit}>
       <input
         type="text"
         placeholder="Name"
@@ -59,6 +60,6 @@ export default function ResendEmailForm() {
       >
         {isLoading ? <span>Sending...</span> : <span>Send email</span>}
       </button>
-    </form>
+    </Section>
   );
 }
