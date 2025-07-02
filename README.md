@@ -45,6 +45,13 @@ Set your API key as `RESEND_API_KEY` env variable.
 
 ### Firecrawl
 
+Web scraping for devs & agents
+
+- https://www.firecrawl.dev/
+- https://docs.firecrawl.dev/
+
+Set your API key as `FIRECRAWL_API_KEY` env variable.
+
 ### MagicUI
 
 UI library for Design Engineers

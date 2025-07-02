@@ -34,32 +34,37 @@ export default function ResendEmailForm() {
   };
 
   return (
-    <Section as="form" title="Resend" onSubmit={handleSubmit}>
-      <input
-        type="text"
-        placeholder="Name"
-        required
-        className="border border-gray-300 rounded-md p-2"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        disabled={isLoading}
-      />
-      <input
-        type="email"
-        placeholder="Email"
-        required
-        className="border border-gray-300 rounded-md p-2"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        disabled={isLoading}
-      />
-      <button
-        type="submit"
-        disabled={isLoading}
-        className={`${isLoading ? "cursor-progress opacity-50" : ""} bg-primary text-white px-4 py-2 rounded-md`}
+    <Section title="Resend">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col md:flex-row gap-4 w-full"
       >
-        {isLoading ? <span>Sending...</span> : <span>Send email</span>}
-      </button>
+        <input
+          type="text"
+          placeholder="Name"
+          required
+          className="border border-gray-300 rounded-md p-2 flex-1"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          disabled={isLoading}
+        />
+        <input
+          type="email"
+          placeholder="Email"
+          required
+          className="border border-gray-300 rounded-md p-2 flex-1"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          disabled={isLoading}
+        />
+        <button
+          type="submit"
+          disabled={isLoading}
+          className={`${isLoading ? "cursor-progress opacity-50" : ""} bg-primary text-white px-4 py-2 rounded-md cursor-pointer`}
+        >
+          {isLoading ? <span>Sending...</span> : <span>Send email</span>}
+        </button>
+      </form>
     </Section>
   );
 }
