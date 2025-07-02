@@ -1,6 +1,6 @@
 interface SectionProps {
   children: React.ReactNode;
-  title?: string;
+  title?: React.ReactNode;
 }
 
 export default function Section({ children, title }: SectionProps) {

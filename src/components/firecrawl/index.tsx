@@ -10,7 +10,7 @@ export default function Firecrawl() {
   const [scrapeResult, setScrapeResult] = useState<ScrapeResponse | null>(null);
 
   return (
-    <Section title="Firecrawl">
+    <Section title={<span data-lingo-skip>Firecrawl</span>}>
       {scrapeResult ? (
         <FirecrawlResult
           result={scrapeResult}

@@ -1,0 +1,309 @@
+{
+  "version": 0.1,
+  "files": {
+    "app/page.tsx": {
+      "scopes": {
+        "3/declaration/body/0/argument/1": {
+          "type": "element",
+          "hash": "9f70167c3cd2aaa195d0ec0974aec442",
+          "context": "",
+          "skip": false,
+          "overrides": {},
+          "content": "Welcome to <element:AuroraText>CustomHack</element:AuroraText> !"
+        }
+      }
+    },
+    "components/firecrawl/form.tsx": {
+      "scopes": {
+        "2/declaration/body/3/argument/1-placeholder": {
+          "type": "attribute",
+          "hash": "ca97457614226960d41dd18c3c29c86b",
+          "context": "",
+          "skip": false,
+          "overrides": {},
+          "content": "URL"
+        },
+        "2/declaration/body/3/argument/3/1/expression/alternate": {
+          "type": "element",
+          "hash": "a8412c6899bb1944e334e92e9a97f020",
+          "context": "",
+          "skip": false,
+          "overrides": {},
+          "content": "Scrape"
+        },
+        "2/declaration/body/3/argument/3/1/expression/consequent": {
+          "type": "element",
+          "hash": "845a06785985415fdd660983879f0356",
+          "context": "",
+          "skip": false,
+          "overrides": {},
+          "content": "Scraping..."
+        }
+      }
+    },
+    "components/firecrawl/index.tsx": {
+      "scopes": {
+        "5/declaration/body/1/argument-title": {
+          "type": "attribute",
+          "hash": "d8c4eebcc6c59235473743065c13300e",
+          "context": "",
+          "skip": false,
+          "overrides": {},
+          "content": "Firecrawl"
+        },
+        "5/declaration/body/1/argument/openingElement/0/value/expression": {
+          "type": "element",
+          "hash": "d8c4eebcc6c59235473743065c13300e",
+          "context": "",
+          "skip": true,
+          "overrides": {},
+          "content": "Firecrawl"
+        }
+      }
+    },
+    "components/firecrawl/result.tsx": {
+      "scopes": {
+        "2/declaration/body/0/argument/1/1": {
+          "type": "element",
+          "hash": "2fd1b638271d88791ad7fd2a73987af1",
+          "context": "",
+          "skip": false,
+          "overrides": {},
+          "content": "← Scrape again"
+        },
+        "2/declaration/body/0/argument/3/1/expression/right/0/body/1": {
+          "type": "element",
+          "hash": "85187d9f080dfa98ed18f83e2ff12f89",
+          "context": "",
+          "skip": false,
+          "overrides": {},
+          "content": "{key}:"
+        }
+      }
+    },
+    "components/resend/email-template.tsx": {
+      "scopes": {
+        "2/declaration/body/0/argument/1": {
+          "type": "element",
+          "hash": "1e8ba83cde937027399c31f99bd15e6d",
+          "context": "",
+          "skip": false,
+          "overrides": {},
+          "content": "Welcome to CustomHack, {name}!"
+        },
+        "2/declaration/body/0/argument/3": {
+          "type": "element",
+          "hash": "8c0ba04b1655fbb10dee070dc9cd1e64",
+          "context": "",
+          "skip": false,
+          "overrides": {},
+          "content": "This is an email from your application."
+        }
+      }
+    },
+    "components/resend/form.tsx": {
+      "scopes": {
+        "2/declaration/body/4/argument-title": {
+          "type": "attribute",
+          "hash": "f420d288f862ba079434362ddb2e4e4e",
+          "context": "",
+          "skip": false,
+          "overrides": {},
+          "content": "Resend"
+        },
+        "2/declaration/body/4/argument/1/1-placeholder": {
+          "type": "attribute",
+          "hash": "9368b5a047572b6051f334af5aa76819",
+          "context": "",
+          "skip": false,
+          "overrides": {},
+          "content": "Name"
+        },
+        "2/declaration/body/4/argument/1/3-placeholder": {
+          "type": "attribute",
+          "hash": "e7f34943a0c2fb849db1839ff6ef5cb5",
+          "context": "",
+          "skip": false,
+          "overrides": {},
+          "content": "Email"
+        },
+        "2/declaration/body/4/argument/1/5/1/expression/alternate": {
+          "type": "element",
+          "hash": "0ef83c0bb40de25921a9ee7fa05babec",
+          "context": "",
+          "skip": false,
+          "overrides": {},
+          "content": "Send email"
+        },
+        "2/declaration/body/4/argument/1/5/1/expression/consequent": {
+          "type": "element",
+          "hash": "313baf79716ca9d57de864eaac4a602a",
+          "context": "",
+          "skip": false,
+          "overrides": {},
+          "content": "Sending..."
+        },
+        "2/declaration/body/5/argument-title": {
+          "type": "attribute",
+          "hash": "f420d288f862ba079434362ddb2e4e4e",
+          "context": "",
+          "skip": false,
+          "overrides": {},
+          "content": "Resend"
+        },
+        "2/declaration/body/5/argument/1/1-placeholder": {
+          "type": "attribute",
+          "hash": "9368b5a047572b6051f334af5aa76819",
+          "context": "",
+          "skip": false,
+          "overrides": {},
+          "content": "Name"
+        },
+        "2/declaration/body/5/argument/1/3-placeholder": {
+          "type": "attribute",
+          "hash": "e7f34943a0c2fb849db1839ff6ef5cb5",
+          "context": "",
+          "skip": false,
+          "overrides": {},
+          "content": "Email"
+        },
+        "2/declaration/body/5/argument/1/5/1/expression/alternate": {
+          "type": "element",
+          "hash": "0ef83c0bb40de25921a9ee7fa05babec",
+          "context": "",
+          "skip": false,
+          "overrides": {},
+          "content": "Send email"
+        },
+        "2/declaration/body/5/argument/1/5/1/expression/consequent": {
+          "type": "element",
+          "hash": "313baf79716ca9d57de864eaac4a602a",
+          "context": "",
+          "skip": false,
+          "overrides": {},
+          "content": "Sending..."
+        },
+        "2/declaration/body/5/argument/1/7/expression/right": {
+          "type": "element",
+          "hash": "11f5cad1727c311a518769a352619053",
+          "context": "",
+          "skip": false,
+          "overrides": {},
+          "content": "Email sent successfully!"
+        },
+        "2/declaration/body/6/argument-title": {
+          "type": "attribute",
+          "hash": "f420d288f862ba079434362ddb2e4e4e",
+          "context": "",
+          "skip": false,
+          "overrides": {},
+          "content": "Resend"
+        },
+        "2/declaration/body/6/argument/1/1-placeholder": {
+          "type": "attribute",
+          "hash": "9368b5a047572b6051f334af5aa76819",
+          "context": "",
+          "skip": false,
+          "overrides": {},
+          "content": "Name"
+        },
+        "2/declaration/body/6/argument/1/3-placeholder": {
+          "type": "attribute",
+          "hash": "e7f34943a0c2fb849db1839ff6ef5cb5",
+          "context": "",
+          "skip": false,
+          "overrides": {},
+          "content": "Email"
+        },
+        "2/declaration/body/6/argument/1/5-placeholder": {
+          "type": "attribute",
+          "hash": "e7f34943a0c2fb849db1839ff6ef5cb5",
+          "context": "",
+          "skip": false,
+          "overrides": {},
+          "content": "Email"
+        },
+        "2/declaration/body/6/argument/1/5/1/expression/alternate": {
+          "type": "element",
+          "hash": "0ef83c0bb40de25921a9ee7fa05babec",
+          "context": "",
+          "skip": false,
+          "overrides": {},
+          "content": "Send email"
+        },
+        "2/declaration/body/6/argument/1/5/1/expression/consequent": {
+          "type": "element",
+          "hash": "313baf79716ca9d57de864eaac4a602a",
+          "context": "",
+          "skip": false,
+          "overrides": {},
+          "content": "Sending..."
+        },
+        "2/declaration/body/6/argument/1/7/1/expression/alternate": {
+          "type": "element",
+          "hash": "0ef83c0bb40de25921a9ee7fa05babec",
+          "context": "",
+          "skip": false,
+          "overrides": {},
+          "content": "Send email"
+        },
+        "2/declaration/body/6/argument/1/7/1/expression/consequent": {
+          "type": "element",
+          "hash": "313baf79716ca9d57de864eaac4a602a",
+          "context": "",
+          "skip": false,
+          "overrides": {},
+          "content": "Sending..."
+        },
+        "2/declaration/body/6/argument/openingElement/0/value/expression": {
+          "type": "element",
+          "hash": "f420d288f862ba079434362ddb2e4e4e",
+          "context": "",
+          "skip": true,
+          "overrides": {},
+          "content": "Resend"
+        },
+        "3/declaration/body/6/argument-title": {
+          "type": "attribute",
+          "hash": "f420d288f862ba079434362ddb2e4e4e",
+          "context": "",
+          "skip": false,
+          "overrides": {},
+          "content": "Resend"
+        },
+        "3/declaration/body/6/argument/1/3-placeholder": {
+          "type": "attribute",
+          "hash": "9368b5a047572b6051f334af5aa76819",
+          "context": "",
+          "skip": false,
+          "overrides": {},
+          "content": "Name"
+        },
+        "3/declaration/body/6/argument/1/5-placeholder": {
+          "type": "attribute",
+          "hash": "e7f34943a0c2fb849db1839ff6ef5cb5",
+          "context": "",
+          "skip": false,
+          "overrides": {},
+          "content": "Email"
+        },
+        "3/declaration/body/6/argument/1/7/1/expression/alternate": {
+          "type": "element",
+          "hash": "0ef83c0bb40de25921a9ee7fa05babec",
+          "context": "",
+          "skip": false,
+          "overrides": {},
+          "content": "Send email"
+        },
+        "3/declaration/body/6/argument/1/7/1/expression/consequent": {
+          "type": "element",
+          "hash": "313baf79716ca9d57de864eaac4a602a",
+          "context": "",
+          "skip": false,
+          "overrides": {},
+          "content": "Sending..."
+        }
+      }
+    }
+  }
+}
