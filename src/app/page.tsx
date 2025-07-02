@@ -1,5 +1,5 @@
-import Image from "next/image";
 import { AuroraText } from "@/components/magicui/aurora-text";
+import ResendEmailForm from "@/components/resend/form";
 
 export default function Home() {
   return (
@@ -12,6 +12,7 @@ export default function Home() {
           </AuroraText>
           !
         </h1>
+        <ResendEmailForm />
       </main>
     </div>
   );

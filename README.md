@@ -36,13 +36,20 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 
 ### Resend
 
+Email for developers
+
+- https://resend.com/
+- https://resend.com/docs/send-with-nextjs
+
+Set your API key as `RESEND_API_KEY` env variable.
+
 ### Firecrawl
 
 ### MagicUI
 
 UI library for Design Engineers
 
-- https://magicui.design/docs
+- https://magicui.design/
 - https://magicui.design/docs/components
 
 ### Next.js
