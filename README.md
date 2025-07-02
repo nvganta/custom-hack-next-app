@@ -1,17 +1,19 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# custom-hack-next-app
+
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app). It is a boilerplate for [CustomHack](https://lu.ma/rnvz7h05).
 
 ## Getting Started
 
-First, run the development server:
+First, install the dependencies via a package manager (we prefer [pnpm](https://pnpm.io/)):
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
+```
+
+Next run the development server
+
+```bash
 pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
@@ -22,12 +24,33 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 
 ## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+### Lingo.dev
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Autumn
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Tambo
+
+### BetterAuth
+
+### Supabase
+
+### Resend
+
+### Firecrawl
+
+### MagicUI
+
+UI library for Design Engineers
+
+- https://magicui.design/docs
+- https://magicui.design/docs/components
+
+### Next.js
+
+The React Framework for the Web
+
+- https://nextjs.org/docs
+- https://nextjs.org/learn
 
 ## Deploy on Vercel
 
