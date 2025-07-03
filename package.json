@@ -22,7 +22,7 @@
     "dompurify": "^3.2.6",
     "highlight.js": "^11.11.1",
     "json-stringify-pretty-compact": "^4.0.0",
-    "lingo.dev": "^0.104.0",
+    "lingo.dev": "^0.105.1",
     "lucide-react": "^0.525.0",
     "motion": "^12.23.0",
     "next": "15.3.4",

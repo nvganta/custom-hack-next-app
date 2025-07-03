@@ -48,8 +48,8 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0
       lingo.dev:
-        specifier: ^0.104.0
-        version: 0.104.0(@types/node@20.19.4)(@types/react@19.1.8)(encoding@0.1.13)(lightningcss@1.30.1)(next@15.3.4(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))
+        specifier: ^0.105.1
+        version: 0.105.1(@types/node@20.19.4)(@types/react@19.1.8)(encoding@0.1.13)(lightningcss@1.30.1)(next@15.3.4(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))
       lucide-react:
         specifier: ^0.525.0
         version: 0.525.0(react@19.1.0)
@@ -790,19 +790,19 @@ packages:
   '@levischuck/tiny-cbor@0.2.11':
     resolution: {integrity: sha512-llBRm4dT4Z89aRsm6u2oEZ8tfwL/2l6BwpZ7JcyieouniDECM5AqNgr/y08zalEIvW3RSK4upYyybDcmjXqAow==}
 
-  '@lingo.dev/_compiler@0.5.2':
-    resolution: {integrity: sha512-Onk4GSmUd2/ICioPOO/HJjcAnSUBT+BWeBUfMBIAH3Fp0EWRnqDjk7HmWt6haVIaxDL2WH5OEpUXpP9sdk2S4Q==}
+  '@lingo.dev/_compiler@0.5.3':
+    resolution: {integrity: sha512-u2hR8CxHxIsuVuRUUf+KH4rXJQnOf7qw0yg24VAQRHPpx68Q0pHWtCTCtg6xZ+y8Aa2WahfGY4R7XSSNdFuCIw==}
 
   '@lingo.dev/_react@0.4.0':
     resolution: {integrity: sha512-X8nNMyQpZtzfOm77iu83t2phXWrdNHmUbOSBQhbGIkIhf0yVHUjWtIaYTwUyj4ZW0lOvAH7nNDTzjN0poMy+Hw==}
     peerDependencies:
       next: 15.2.4
 
-  '@lingo.dev/_sdk@0.9.5':
-    resolution: {integrity: sha512-p0IA1yUdzA68FkXtU2X5G8h+QCdqrk4FAFZzAbvmkzWBXLrfpW/RxALr7NkX6laYN/i5ICZXoFM03+FpbbmXOw==}
+  '@lingo.dev/_sdk@0.9.6':
+    resolution: {integrity: sha512-VoH7CMWdkE/l++fL/wIEdA1MEcAaOjPAPQkF0yxbmb+ExlbMxjySW0pXyGT8fZFsiN5wf9n49/JF1r2lHbxOEg==}
 
-  '@lingo.dev/_spec@0.39.0':
-    resolution: {integrity: sha512-DxLEKUROLV9tM5Y2+Wh9bFEtYXhfRN7yGaiuR30fKQh719JxIE93Ht0iqWsf4/1huCuCWIKgyGZT8y1IN/Jbtg==}
+  '@lingo.dev/_spec@0.39.1':
+    resolution: {integrity: sha512-P563lz53M433SgRvIvfKrIfxyeP2whevkQ70uLjTHM6QUUplWXUlckzct6ZOdvZ6S+Sk9Ns2XH6y5BijtF5yQA==}
 
   '@mendable/firecrawl-js@1.29.1':
     resolution: {integrity: sha512-w7mXja6hSNL6li7BHgY6LQLnBJ9RIxWkmZ16y2MCOr3w6MlR7k2ZcTxro6vEJrUoshhyoOqhcFCyD1P0ckBuRw==}
@@ -3906,8 +3906,8 @@ packages:
     resolution: {integrity: sha512-xi6IyHML+c9+Q3W0S4fCQJOym42pyurFiJUHEcEyHS0CeKzia4yZDEsLlqOFykxOdHpNy0NmvVO31vcSqAxJCg==}
     engines: {node: '>= 12.0.0'}
 
-  lingo.dev@0.104.0:
-    resolution: {integrity: sha512-JZsZUWV5US69G2FXI3jzWWM/XvqVPmq2fmLy28mnRLTKcE3j5h7XSnTKz3uXeLPwlgp4VkU/gxwGZSVx+6D3Bw==}
+  lingo.dev@0.105.1:
+    resolution: {integrity: sha512-laxlXGAGLQtCYMtnG+IkxQuwY/HsJvXmtzDJA7gDYa5naTXxMeT41IgbQYGpMYjWCOrcg5VASq+Jq1psN5WRJA==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -6180,7 +6180,7 @@ snapshots:
 
   '@levischuck/tiny-cbor@0.2.11': {}
 
-  '@lingo.dev/_compiler@0.5.2(@types/node@20.19.4)(jsdom@25.0.1)(lightningcss@1.30.1)(react@18.3.1)':
+  '@lingo.dev/_compiler@0.5.3(@types/node@20.19.4)(jsdom@25.0.1)(lightningcss@1.30.1)(react@18.3.1)':
     dependencies:
       '@ai-sdk/google': 1.2.22(zod@3.25.71)
       '@ai-sdk/groq': 1.2.9(zod@3.25.71)
@@ -6189,7 +6189,7 @@ snapshots:
       '@babel/parser': 7.28.0
       '@babel/traverse': 7.28.0
       '@babel/types': 7.28.0
-      '@lingo.dev/_sdk': 0.9.5
+      '@lingo.dev/_sdk': 0.9.6
       '@openrouter/ai-sdk-provider': 0.7.2(ai@4.3.16(react@19.1.0)(zod@3.25.71))(zod@3.25.71)
       '@prettier/sync': 0.6.1(prettier@3.6.2)
       ai: 4.3.16(react@18.3.1)(zod@3.25.71)
@@ -6198,8 +6198,10 @@ snapshots:
       fast-xml-parser: 5.2.5
       ini: 5.0.0
       lodash: 4.17.21
+      node-machine-id: 1.1.12
       object-hash: 3.0.0
       ollama-ai-provider: 1.2.0(zod@3.25.71)
+      posthog-node: 4.18.0
       prettier: 3.6.2
       unplugin: 2.3.5
       vitest: 2.1.9(@types/node@20.19.4)(jsdom@25.0.1)(lightningcss@1.30.1)
@@ -6212,6 +6214,7 @@ snapshots:
       - babel-plugin-macros
       - bufferutil
       - canvas
+      - debug
       - happy-dom
       - jsdom
       - less
@@ -6232,9 +6235,9 @@ snapshots:
       lodash: 4.17.21
       next: 15.3.4(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
 
-  '@lingo.dev/_sdk@0.9.5':
+  '@lingo.dev/_sdk@0.9.6':
     dependencies:
-      '@lingo.dev/_spec': 0.39.0
+      '@lingo.dev/_spec': 0.39.1
       '@paralleldrive/cuid2': 2.2.2
       jsdom: 25.0.1
       zod: 3.25.71
@@ -6244,7 +6247,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@lingo.dev/_spec@0.39.0':
+  '@lingo.dev/_spec@0.39.1':
     dependencies:
       zod: 3.25.71
       zod-to-json-schema: 3.24.6(zod@3.25.71)
@@ -9623,7 +9626,7 @@ snapshots:
       lightningcss-win32-arm64-msvc: 1.30.1
       lightningcss-win32-x64-msvc: 1.30.1
 
-  lingo.dev@0.104.0(@types/node@20.19.4)(@types/react@19.1.8)(encoding@0.1.13)(lightningcss@1.30.1)(next@15.3.4(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)):
+  lingo.dev@0.105.1(@types/node@20.19.4)(@types/react@19.1.8)(encoding@0.1.13)(lightningcss@1.30.1)(next@15.3.4(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)):
     dependencies:
       '@ai-sdk/anthropic': 1.2.12(zod@3.25.71)
       '@ai-sdk/google': 1.2.22(zod@3.25.71)
@@ -9637,10 +9640,10 @@ snapshots:
       '@gitbeaker/rest': 39.34.3
       '@inkjs/ui': 2.0.0(ink@4.4.1(@types/react@19.1.8)(react@19.1.0))
       '@inquirer/prompts': 7.6.0(@types/node@20.19.4)
-      '@lingo.dev/_compiler': 0.5.2(@types/node@20.19.4)(jsdom@25.0.1)(lightningcss@1.30.1)(react@18.3.1)
+      '@lingo.dev/_compiler': 0.5.3(@types/node@20.19.4)(jsdom@25.0.1)(lightningcss@1.30.1)(react@18.3.1)
       '@lingo.dev/_react': 0.4.0(next@15.3.4(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))
-      '@lingo.dev/_sdk': 0.9.5
-      '@lingo.dev/_spec': 0.39.0
+      '@lingo.dev/_sdk': 0.9.6
+      '@lingo.dev/_spec': 0.39.1
       '@modelcontextprotocol/sdk': 1.13.3
       '@openrouter/ai-sdk-provider': 0.7.2(ai@4.3.16(react@19.1.0)(zod@3.25.71))(zod@3.25.71)
       '@paralleldrive/cuid2': 2.2.2

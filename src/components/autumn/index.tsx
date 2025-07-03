@@ -2,13 +2,15 @@
 
 import { useState } from "react";
 import Section from "../common/section";
-import type { ScrapeResponse } from "@mendable/firecrawl-js";
 import { useCustomer } from "autumn-js/react";
 
 export default function Autumn() {
   const { customer, isLoading, allowed, track, refetch, attach } =
     useCustomer();
   const [message, setMessage] = useState("");
+  const [isAllowed, setIsAllowed] = useState(true);
+
+  const { balance, included_usage } = customer?.features.messages ?? {};
 
   const sendMessage = async () => {
     setMessage("");
@@ -17,7 +19,7 @@ export default function Autumn() {
       await track({ featureId: "messages" });
       refetch();
     } else {
-      alert("Out of messages, please upgrade!");
+      setIsAllowed(false);
     }
   };
 
@@ -43,28 +45,36 @@ export default function Autumn() {
         >
           Send Message
         </button>
-        <div className="flex whitespace-nowrap items-center justify-center w-16 text-sm">
-          <>
-            {customer?.features.messages?.balance} /{" "}
-            {customer?.features.messages?.included_usage}
-          </>
+        <div className="flex whitespace-nowrap items-center justify-end w-[200px] text-sm">
+          {balance ? (
+            <span>
+              Usage: {balance} / {included_usage}
+            </span>
+          ) : (
+            <span className="text-gray-400 text-sm">No messages left.</span>
+          )}
         </div>
-        <button
-          type="submit"
-          disabled={isLoading}
-          className={`${
-            isLoading ? "cursor-progress opacity-50" : ""
-          } bg-primary text-white px-4 py-2 rounded-md cursor-pointer hover:bg-primary/80 transition-colors`}
-          onClick={async () => {
-            await attach({
-              productId: "pro_monthly",
-              openInNewTab: true,
-            });
-          }}
-        >
-          Upgrade
-        </button>
       </div>
+      {!isAllowed && (
+        <div className="flex flex-row items-center justify-center gap-2">
+          <div className="text-red-500">Out of messages, please upgrade!</div>
+          <button
+            type="submit"
+            disabled={isLoading}
+            className={`${
+              isLoading ? "cursor-progress opacity-50" : ""
+            } bg-primary text-white px-4 py-2 rounded-md cursor-pointer hover:bg-primary/80 transition-colors`}
+            onClick={async () => {
+              await attach({
+                productId: "pro_monthly",
+                openInNewTab: true,
+              });
+            }}
+          >
+            Upgrade
+          </button>
+        </div>
+      )}
     </Section>
   );
 }
