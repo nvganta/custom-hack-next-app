@@ -13,8 +13,7 @@ export async function POST(request: Request) {
   try {
     const scrapeResult = (await firecrawl.scrapeUrl(validUrl, {
       formats: [],
-      maxAge: 3600000, // 1 hour in milliseconds
-    } as any)) as ScrapeResponse;
+    })) as ScrapeResponse;
 
     if (!scrapeResult.success) {
       return Response.json({ error: scrapeResult.error }, { status: 500 });
@@ -30,6 +29,7 @@ function getValidUrl(url: string) {
   try {
     return new URL(url).toString();
   } catch (error) {
+    console.error("Error parsing URL", error);
     return false;
   }
 }

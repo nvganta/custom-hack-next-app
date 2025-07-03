@@ -61,7 +61,39 @@ Set your Tambo API key as `NEXT_PUBLIC_TAMBO_API_KEY` env variable. [The `NEXT_P
 
 ### BetterAuth
 
-### Supabase
+The most comprehensive authentication framework for TypeScript.
+
+- http://better-auth.com/
+- http://better-auth.com/docs
+
+Set the following env vars:
+
+- secret key as `BETTER_AUTH_SECRET`
+- base url as `BETTER_AUTH_URL`
+
+### Supabase: Database Sync & Management via Prisma
+
+After editing your Prisma schema (`prisma/schema.prisma` file) or on first setup, run:
+
+```bash
+# Run a new migration and apply it to your database
+npx prisma migrate dev --name <migration-name>
+
+# Generate the Prisma client (usually done automatically by migrate)
+npx prisma generate
+```
+
+Set database connection string as `DATABASE_URL` and `DIRECT_URL` env vars (in Supabase, choose _Connect -> ORMs -> Prisma_)
+
+For more details on Prisma, see:
+
+- https://www.prisma.io/
+- https://www.prisma.io/docs/orm/overview/introduction/what-is-prisma
+
+You can setup a Supabase database and lear about it here:
+
+- https://supabase.com/
+- https://supabase.com/docs/guides/database/overview
 
 ### Resend
 
@@ -94,6 +126,14 @@ The React Framework for the Web
 
 - https://nextjs.org/docs
 - https://nextjs.org/learn
+
+### Setting up env variables
+
+You need to create and use your own accounts and setup env variables for your project. It is up to you how you do this:
+
+1. put them in `.env` file of your project. See `env.example` for a full list of env vars. Next.js loads them automatically for you.
+
+2. export them globally (eg. `export LINGODOTDEV_API_KEY=api_xxx`) in your shell or profile (eg. `~/.profile`)
 
 ## Deploy on Vercel
 

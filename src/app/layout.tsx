@@ -30,7 +30,9 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} font-[family-name:var(--font-geist-sans)] antialiased`}
         >
-          {children}
+          <div className="flex flex-col gap-8 items-center min-h-screen py-8 px-4 max-w-3xl mx-auto">
+            {children}
+          </div>
           <AppLocaleSwitcher />
         </body>
       </html>

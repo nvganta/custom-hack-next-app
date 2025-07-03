@@ -1,11 +1,10 @@
 import type { ScrapeResponse } from "@mendable/firecrawl-js";
-import ReactMarkdown from "react-markdown";
 
 export default function FirecrawlResult({
   result,
   onDismiss,
 }: {
-  result: any;
+  result: ScrapeResponse;
   onDismiss: () => void;
 }) {
   return (
