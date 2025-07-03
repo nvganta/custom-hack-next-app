@@ -52,6 +52,13 @@ To localize templates tun `npx lingo.dev@latest run`.
 
 ### Autumn
 
+The most simple and flexible way to setup payments.
+
+- https://useautumn.com/
+- [Sign up via this link](https://app.useautumn.com/sign-in?token=2zMnk448D3OFlXKsL9SBdj3609w) to auto create sample free and pro tiers.
+- [Create your API key in your account here.](https://app.useautumn.com/dev)
+
+Set your API key as `AUTUMN_SECRET_KEY` env variable.
 ### Tambo
 
 Add React components to your AI assistant, copilot, or agent.
