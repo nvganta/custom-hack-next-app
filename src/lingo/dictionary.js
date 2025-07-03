@@ -361,7 +361,7 @@ export default {
         "2/declaration/body/0/argument/1": {
           content: {
             de: "Erstellen Sie konversationelle Schnittstellen<element:Link>Tambo Demo</element:Link>",
-            en: "Build conversational interfaces<element:Link>Tambo Demo</element:Link>",
+            en: "Build conversational interfaces<element:Link>Chat</element:Link>",
             es: "Construir interfaces conversacionales<element:Link>Demo de Tambo</element:Link>",
             fr: "Construire des interfaces conversationnelles<element:Link>Démonstration de Tambo</element:Link>",
           },
@@ -420,6 +420,24 @@ export default {
     },
     "components/tambo/message-input.tsx": {
       entries: {
+        "13/0/init/0/1/value/right": {
+          content: {
+            de: "Lass uns eine Website abschöpfen",
+            en: "Let's scrape a website",
+            es: "Vamos a extraer un sitio web",
+            fr: "Scrapons un site web",
+          },
+          hash: "b51099c836af1977d36a4ded7d878eb9",
+        },
+        "13/0/init/0/1/value/right/expression": {
+          content: {
+            de: "Lass uns eine Website abschöpfen",
+            en: "Let's scrape a website",
+            es: "Vamos a extraer un sitio web",
+            fr: "Scrapons un site web",
+          },
+          hash: "b51099c836af1977d36a4ded7d878eb9",
+        },
         "13/0/init/body/5/argument-aria-label": {
           content: {
             de: "Chat-Nachrichten-Eingabe",
@@ -461,6 +479,19 @@ export default {
             },
             hash: "f31601e3feba527374d829919cef81af",
           },
+      },
+    },
+    "components/tambo/message-thread-full.tsx": {
+      entries: {
+        "12/declaration/0/init/0/body/4/argument/5/9/1/1-placeholder": {
+          content: {
+            de: "Bitte eine Website abrufen oder eine E-Mail senden",
+            en: "Ask to scrape a website or send an email",
+            es: "Solicitar raspar un sitio web o enviar un correo electrónico",
+            fr: "Demander de scraper un site web ou d'envoyer un email",
+          },
+          hash: "b57049fc2a99e0dd830b0070994bff08",
+        },
       },
     },
     "components/tambo/message.tsx": {

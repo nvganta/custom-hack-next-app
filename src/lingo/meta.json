@@ -395,6 +395,22 @@
     },
     "components/tambo/message-input.tsx": {
       "scopes": {
+        "13/0/init/0/1/value/right": {
+          "type": "element",
+          "hash": "b51099c836af1977d36a4ded7d878eb9",
+          "context": "",
+          "skip": false,
+          "overrides": {},
+          "content": "Let's scrape a website"
+        },
+        "13/0/init/0/1/value/right/expression": {
+          "type": "element",
+          "hash": "b51099c836af1977d36a4ded7d878eb9",
+          "context": "",
+          "skip": false,
+          "overrides": {},
+          "content": "Let's scrape a website"
+        },
         "13/0/init/body/5/argument-aria-label": {
           "type": "attribute",
           "hash": "ff8160ca793b4337a2ae3b55ed91b165",
@@ -430,6 +446,18 @@
           "skip": false,
           "overrides": {},
           "content": "{modKey}+{altKey}+<expression/>"
+        }
+      }
+    },
+    "components/tambo/message-thread-full.tsx": {
+      "scopes": {
+        "12/declaration/0/init/0/body/4/argument/5/9/1/1-placeholder": {
+          "type": "attribute",
+          "hash": "b57049fc2a99e0dd830b0070994bff08",
+          "context": "",
+          "skip": false,
+          "overrides": {},
+          "content": "Ask to scrape a website or send an email"
         }
       }
     },

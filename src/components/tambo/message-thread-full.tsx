@@ -110,7 +110,7 @@ export const MessageThreadFull = forwardRef<
         {/* Message input */}
         <div className="p-4">
           <MessageInput contextKey={contextKey}>
-            <MessageInputTextarea />
+            <MessageInputTextarea placeholder="Ask to scrape a website or send an email" />
             <MessageInputToolbar>
               <MessageInputSubmitButton />
             </MessageInputToolbar>

@@ -52,6 +52,13 @@ To localize templates tun `npx lingo.dev@latest run`.
 
 ### Tambo
 
+Add React components to your AI assistant, copilot, or agent.
+
+- https://tambo.co/
+- https://tambo.co/docs
+
+Set your Tambo API key as `NEXT_PUBLIC_TAMBO_API_KEY` env variable. [The `NEXT_PUBLIC_` prefix makes it available client-side in browser.](https://nextjs.org/docs/app/guides/environment-variables#bundling-environment-variables-for-the-browser)
+
 ### BetterAuth
 
 ### Supabase

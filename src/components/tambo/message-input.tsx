@@ -224,7 +224,7 @@ export interface MessageInputTextareaProps
  */
 const MessageInputTextarea = ({
   className,
-  placeholder = "Let's scrape a website",
+  placeholder,
   ...props
 }: MessageInputTextareaProps) => {
   const { value, setValue, textareaRef, handleSubmit } =
