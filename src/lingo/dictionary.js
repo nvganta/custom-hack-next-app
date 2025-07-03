@@ -23,6 +23,58 @@ export default {
         },
       },
     },
+    "app/tambo/page.tsx": {
+      entries: {
+        "4/declaration/body/0/argument/1/1": {
+          content: {
+            de: "asd<element:MessageThreadFull></element:MessageThreadFull>",
+            en: "asd<element:MessageThreadFull></element:MessageThreadFull>",
+            es: "asd<element:MessageThreadFull></element:MessageThreadFull>",
+            fr: "asd<element:MessageThreadFull></element:MessageThreadFull>",
+          },
+          hash: "dc3da8ad7b35ef31357fa781bde69a63",
+        },
+        "5/body/0/argument": {
+          content: {
+            de: "← Nochmals abschaben",
+            en: "← Scrape again",
+            es: "← Raspar de nuevo",
+            fr: "← Récupérer à nouveau",
+          },
+          hash: "fdef4a95db2ba6c454a9f8c441685460",
+        },
+        "6/body/0/argument": {
+          content: {
+            de: "← Zurück zur Startseite",
+            en: "← Back to homepage",
+            es: "← Volver a la página de inicio",
+            fr: "← Retour à la page d'accueil",
+          },
+          hash: "9af3257d8b057be341dd529e999c3938",
+        },
+      },
+    },
+    "components/common/app-locale-switcher.tsx": {
+      entries: {
+        "1/declaration/body/0/argument/3": {
+          content: {
+            de: "Lingo.dev Compiler",
+            en: "Lingo.dev Compiler",
+            es: "Compilador de Lingo.dev",
+            fr: "Compilateur Lingo.dev",
+          },
+          hash: "4d4c7a4e3e366b756fc75d9067cb9f5e",
+        },
+        "1/declaration/body/0/argument/5": {
+          content: {
+            de: "Lingo.dev Compiler",
+            es: "Compilador de Lingo.dev",
+            fr: "Compilateur Lingo.dev",
+          },
+          hash: "4d4c7a4e3e366b756fc75d9067cb9f5e",
+        },
+      },
+    },
     "components/firecrawl/form.tsx": {
       entries: {
         "2/declaration/body/3/argument/1-placeholder": {
