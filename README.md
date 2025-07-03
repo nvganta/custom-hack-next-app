@@ -104,7 +104,7 @@ Email for developers
 - https://resend.com/
 - https://resend.com/docs/send-with-nextjs
 
-Set your API key as `RESEND_API_KEY` env variable.
+Set your API key as `RESEND_API_KEY` and sender email as `RESEND_FROM_EMAIL` env variables. Make sure you have the sender domain correctly configured in your Resend account.
 
 ### Firecrawl
 
@@ -142,3 +142,5 @@ You need to create and use your own accounts and setup env variables for your pr
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+When deploying to Vercel make sure to populate all env variables in your app.

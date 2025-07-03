@@ -1,3 +1,4 @@
+"use client";
 import type { ScrapeResponse } from "@mendable/firecrawl-js";
 
 export default function FirecrawlResult({

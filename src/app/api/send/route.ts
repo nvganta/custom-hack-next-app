@@ -12,7 +12,7 @@ export async function POST(request: Request) {
   try {
     const { subject, body } = loadTemplate(locale);
     const { data, error } = await resend.emails.send({
-      from: "Acme <from@lingo.dev>",
+      from: process.env.RESEND_FROM_EMAIL ?? "Acme <from@example.com>",
       to: [email],
       subject,
       text: body.replace("{{name}}", name),
