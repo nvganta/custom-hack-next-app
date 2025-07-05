@@ -1,63 +1,209 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
 }
 
 model account {
-  id                    String    @id
+  id                    String    @id @default(auto()) @map("_id") @db.ObjectId
   accountId             String
   providerId            String
-  userId                String
+  userId                String    @db.ObjectId
   accessToken           String?
   refreshToken          String?
   idToken               String?
-  accessTokenExpiresAt  DateTime? @db.Timestamp(6)
-  refreshTokenExpiresAt DateTime? @db.Timestamp(6)
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
   scope                 String?
   password              String?
-  createdAt             DateTime  @db.Timestamp(6)
-  updatedAt             DateTime  @db.Timestamp(6)
-  user                  user      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  user                  user      @relation(fields: [userId], references: [id])
 }
 
 model session {
-  id           String   @id
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
   sessionToken String   @unique
-  userId       String
+  userId       String   @db.ObjectId
   expires      DateTime
   createdAt    DateTime @default(now())
-  updatedAt    DateTime
-  expiresAt    DateTime @db.Timestamp(6)
+  updatedAt    DateTime @updatedAt
+  expiresAt    DateTime
   token        String   @unique
   ipAddress    String?
   userAgent    String?
-  user         user     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         user     @relation(fields: [userId], references: [id])
 }
 
 model user {
-  id            String    @id
-  email         String    @unique
+  id            String                @id @default(auto()) @map("_id") @db.ObjectId
+  email         String                @unique
   password      String?
   name          String?
   image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime
-  emailVerified Boolean
-  account       account[]
-  session       session[]
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+  emailVerified Boolean               @default(false)
+  accounts      account[]
+  sessions      session[]
+  articles      article[]
+  preferences   user_preferences?
+  newsletters   newsletter_subscriber[]
 }
 
 model verification {
-  id         String    @id
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
   identifier String
   value      String
-  expiresAt  DateTime  @db.Timestamp(6)
-  createdAt  DateTime? @db.Timestamp(6)
-  updatedAt  DateTime? @db.Timestamp(6)
+  expiresAt  DateTime
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+// ContentPilot Agent Models
+model agent_registry {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  name            String    @unique
+  endpoint        String
+  version         String
+  capabilities    String[]
+  status          String    @default("UP") // UP, DOWN, MAINTENANCE
+  lastHealthCheck DateTime  @default(now())
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model article {
+  id                  String    @id @default(auto()) @map("_id") @db.ObjectId
+  title               String
+  content             String
+  tldr                String?
+  url                 String?
+  sourceUrl           String?
+  sourceName          String?
+  topics              String[]
+  status              String    @default("DRAFT") // DRAFT, PUBLISHED, ARCHIVED
+  authorId            String?   @db.ObjectId
+  author              user?     @relation(fields: [authorId], references: [id])
+  inNewsletterQueue   Boolean   @default(false)
+  publishedAt         DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  newsletter_articles newsletter_article[]
+}
+
+model newsletter {
+  id          String                  @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  subject     String
+  content     String
+  status      String                  @default("DRAFT") // DRAFT, SENT, SCHEDULED
+  scheduledAt DateTime?
+  sentAt      DateTime?
+  createdAt   DateTime                @default(now())
+  updatedAt   DateTime                @updatedAt
+  articles    newsletter_article[]
+  subscribers newsletter_subscriber[]
+}
+
+model newsletter_article {
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId
+  newsletterId String     @db.ObjectId
+  articleId    String     @db.ObjectId
+  order        Int        @default(0)
+  newsletter   newsletter @relation(fields: [newsletterId], references: [id])
+  article      article    @relation(fields: [articleId], references: [id])
+  createdAt    DateTime   @default(now())
+
+  @@unique([newsletterId, articleId])
+}
+
+model newsletter_subscriber {
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId
+  email        String
+  userId       String?    @db.ObjectId
+  newsletterId String     @db.ObjectId
+  status       String     @default("SUBSCRIBED") // SUBSCRIBED, UNSUBSCRIBED
+  subscribedAt DateTime   @default(now())
+  user         user?      @relation(fields: [userId], references: [id])
+  newsletter   newsletter @relation(fields: [newsletterId], references: [id])
+
+  @@unique([email, newsletterId])
+}
+
+model user_preferences {
+  id                    String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId                String   @unique @db.ObjectId
+  focusTopics           String[]
+  preferredSources      String[]
+  editorialStyle        String?
+  notificationSettings  Json?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  user                  user     @relation(fields: [userId], references: [id])
+}
+
+model content_source {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  name        String    @unique
+  url         String
+  type        String    // RSS, API, CRAWLER, etc.
+  isActive    Boolean   @default(true)
+  lastCrawled DateTime?
+  crawlConfig Json?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model intelligence_briefing {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  date              DateTime @default(now())
+  status            String   @default("PROCESSING") // PROCESSING, READY, FAILED
+  topicsGathered    String[]
+  articlesGenerated Int      @default(0)
+  processingLog     String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@unique([date])
+}
+
+// User-defined topics for content gathering
+model Topic {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Newsletter subscribers
+model Subscriber {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  name      String?
+  status    String   @default("SUBSCRIBED") // e.g., SUBSCRIBED, UNSUBSCRIBED
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VerificationToken {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// Application settings
+model Setting {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  key       String   @unique
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

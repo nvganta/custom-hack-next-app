@@ -1,4 +1,16 @@
-export default {
+const dictionary = {
+  "en": {
+    "common": {
+      "title": "Custom Hack Next App",
+      "subtitle": "A customizable Next.js application"
+    }
+  },
+  "de": {
+    "common": {
+      "title": "Benutzerdefinierte Hack Next App",
+      "subtitle": "Eine anpassbare Next.js-Anwendung"
+    }
+  },
   version: 0.1,
   files: {
     "app/page.tsx": {
@@ -278,3 +290,5 @@ export default {
     },
   },
 };
+
+export default dictionary;
