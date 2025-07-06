@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
       schedule,
       enabled 
     });
-  } catch (error) {
+  } catch {
     console.error('Error updating automation schedule:', error);
     return NextResponse.json(
       { error: 'Failed to update automation schedule' },
@@ -30,15 +30,18 @@ export async function GET() {
   try {
     const service = ContentPilotService.getInstance();
     
-    const schedule = await service.getSetting('automation_schedule') || '0 8 * * *'; // Default: 8 AM daily
-    const enabled = (await service.getSetting('automation_enabled')) === 'true';
+    const scheduleResult = await service.getSetting('automation_schedule');
+    const enabledResult = await service.getSetting('automation_enabled');
+    
+    const schedule = scheduleResult?.value || '0 8 * * *'; // Default: 8 AM daily
+    const enabled = enabledResult?.value === 'true';
     
     return NextResponse.json({
       schedule,
       enabled,
       nextRun: getNextRunTime(schedule, enabled)
     });
-  } catch (error) {
+  } catch {
     console.error('Error fetching automation schedule:', error);
     return NextResponse.json(
       { error: 'Failed to fetch automation schedule' },

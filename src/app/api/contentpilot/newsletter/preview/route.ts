@@ -32,7 +32,7 @@ export async function GET() {
         estimatedSendTime: new Date().toISOString()
       }
     });
-  } catch (error) {
+  } catch {
     console.error('Error generating newsletter preview:', error);
     return NextResponse.json(
       { error: 'Failed to generate newsletter preview' },

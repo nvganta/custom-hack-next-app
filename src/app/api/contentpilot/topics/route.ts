@@ -10,7 +10,7 @@ export async function GET() {
       orderBy: { createdAt: 'desc' },
     });
     return NextResponse.json(topics);
-  } catch (error) {
+  } catch {
     console.error("Failed to fetch topics:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(newTopic, { status: 201 });
-  } catch (error) {
+  } catch {
     console.error("Failed to create topic:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }

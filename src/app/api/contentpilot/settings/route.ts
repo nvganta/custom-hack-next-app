@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
       const allSettings = await prisma.setting.findMany();
       return NextResponse.json(allSettings);
     }
-  } catch (error) {
+  } catch {
     console.error("Failed to fetch settings:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(updatedSetting, { status: 201 });
-  } catch (error) {
+  } catch {
     console.error("Failed to save setting:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }

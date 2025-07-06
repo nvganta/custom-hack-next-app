@@ -112,7 +112,16 @@ export async function POST() {
                 
                 Focus on the topics of: ${topicKeywords.join(', ')}.
                 
-                For each article, provide a title, a short TL;DR summary (2-3 sentences), and the full article content (3-5 paragraphs).
+                For each article, provide:
+                1. A compelling title (10-15 words)
+                2. A short TL;DR summary (2-3 sentences max)
+                3. Full article content (4-6 detailed paragraphs, minimum 300 words each article)
+                
+                The article content should be comprehensive, well-structured, and include:
+                - An engaging introduction
+                - Key insights and analysis
+                - Relevant examples or data points
+                - Future implications or conclusions
                 
                 Respond with a valid JSON object in the following structure: { "articles": [{ "title": "...", "tldr": "...", "content": "..." }] }.
                 Do not include any other text or explanations in your response. Just the JSON.`,
@@ -124,7 +133,7 @@ export async function POST() {
         ],
         model: "llama3-70b-8192",
         temperature: 0.7,
-        max_tokens: 4000,
+        max_tokens: 6000,
         response_format: { type: "json_object" },
     });
 
@@ -167,6 +176,64 @@ export async function POST() {
         topicsGathered: topicKeywords,
       },
     });
+
+    // Check if email notifications are enabled and send summary
+    try {
+      const emailSettings = await Promise.all([
+        prisma.setting.findUnique({ where: { key: "enableEmailNotifications" } }),
+        prisma.setting.findUnique({ where: { key: "notificationEmail" } }),
+      ]);
+
+      const enableNotifications = emailSettings[0]?.value === 'true';
+      const notificationEmail = emailSettings[1]?.value;
+
+      if (enableNotifications && notificationEmail) {
+        // Get the created articles for the summary
+        const createdArticles = await prisma.article.findMany({
+          where: {
+            createdAt: {
+              gte: new Date(Date.now() - 5 * 60 * 1000), // Last 5 minutes
+            },
+          },
+          orderBy: { createdAt: 'desc' },
+          take: generatedArticles.length,
+        });
+
+        // Prepare summary data
+        const summary = {
+          totalArticles: generatedArticles.length,
+          articles: createdArticles.map(article => ({
+            id: article.id,
+            title: article.title,
+            content: article.content || article.tldr,
+            topics: article.topics,
+            status: article.status,
+            createdAt: article.createdAt.toISOString(),
+          })),
+          topics: topicKeywords,
+          date: new Date().toISOString(),
+        };
+
+        // Send intelligence summary email
+        const emailResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/contentpilot/intelligence-summary`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            summary,
+            userEmail: notificationEmail,
+          }),
+        });
+
+        if (!emailResponse.ok) {
+          console.error('Failed to send intelligence summary email:', await emailResponse.text());
+        } else {
+          console.log('Intelligence summary email sent successfully');
+        }
+      }
+    } catch (emailError) {
+      console.error('Error sending intelligence summary email:', emailError);
+      // Don't fail the whole process if email fails
+    }
 
     return NextResponse.json({ 
       success: true, 

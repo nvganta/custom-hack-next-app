@@ -192,7 +192,7 @@ export async function POST(request: NextRequest) {
           } else {
             emailResults.push({ email, success: true, id: data?.id });
           }
-        } catch (error) {
+        } catch {
           console.error(`Error sending to ${email}:`, error);
           emailResults.push({ email, success: false, error: "Send failed" });
         }

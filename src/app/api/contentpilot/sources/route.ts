@@ -10,7 +10,7 @@ export async function GET() {
       orderBy: { createdAt: 'desc' },
     });
     return NextResponse.json(sources);
-  } catch (error) {
+  } catch {
     console.error("Failed to fetch sources:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(newSource, { status: 201 });
-  } catch (error) {
+  } catch {
     console.error("Failed to create source:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }

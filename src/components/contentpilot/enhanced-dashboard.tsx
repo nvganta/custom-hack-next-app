@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { ContentPilotService } from "@/lib/contentpilot/service";
 import { format, isToday, isYesterday, startOfDay } from "date-fns";
 import ReactMarkdown from "react-markdown";
@@ -53,6 +53,11 @@ interface FullArticle extends Article {
   updatedAt: string;
 }
 
+interface HealthStatus {
+  status: string;
+  [key: string]: unknown;
+}
+
 function formatDateGroup(date: Date): string {
   if (isToday(date)) return "Today";
   if (isYesterday(date)) return "Yesterday";
@@ -92,7 +97,7 @@ export default function EnhancedContentPilotDashboard() {
   const [articleLoading, setArticleLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [gatheringIntelligence, setGatheringIntelligence] = useState(false);
-  const [healthStatus, setHealthStatus] = useState<any>(null);
+  const [healthStatus, setHealthStatus] = useState<HealthStatus | null>(null);
   const [filter, setFilter] = useState<'all' | 'draft' | 'published' | 'queued'>('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [isEditing, setIsEditing] = useState(false);
@@ -102,42 +107,40 @@ export default function EnhancedContentPilotDashboard() {
   const [editedTitle, setEditedTitle] = useState('');
   const [editedContent, setEditedContent] = useState('');
   const [editedTldr, setEditedTldr] = useState('');
-  const [editedTopics, setEditedTopics] = useState<string[]>([]);
-  const [newTopic, setNewTopic] = useState('');
   const [previewMode, setPreviewMode] = useState(false);
 
   const service = ContentPilotService.getInstance();
 
+  const loadInitialData = useCallback(async () => {
+    try {
+      setLoading(true);
+      const [briefData, healthData] = await Promise.all([
+        service.getLatestBrief(),
+        service.healthCheck()
+      ]);
+      setBrief(briefData);
+      setHealthStatus(healthData);
+    } catch (err) {
+      console.error('Error loading data:', err);
+      setError('Failed to load dashboard data');
+    } finally {
+      setLoading(false);
+    }
+  }, [service]);
+
   useEffect(() => {
     loadInitialData();
-  }, []);
+  }, [loadInitialData]);
 
   useEffect(() => {
     if (selectedArticle) {
       setEditedTitle(selectedArticle.title);
       setEditedContent(selectedArticle.content || '');
       setEditedTldr(selectedArticle.tldr || '');
-      setEditedTopics(selectedArticle.topics || []);
       setIsEditing(false);
       setPreviewMode(false);
     }
-  }, [selectedArticle?.id]);
-
-  const loadInitialData = async () => {
-    try {
-      setLoading(true);
-      const [briefData, healthData] = await Promise.all([
-        service.getLatestBrief(),
-        service.healthCheck(),
-      ]);
-      setBrief(briefData);
-      setHealthStatus(healthData);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load data');
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [selectedArticle]);
 
   const loadFullArticle = async (article: Article) => {
     try {

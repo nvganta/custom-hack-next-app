@@ -5,11 +5,13 @@ import { ContentPilotService } from "@/lib/contentpilot/service";
 import { format } from "date-fns";
 import SettingsPage from "./settings-page";
 import AutomationSettings from "./automation-settings";
+import { Calendar } from "./calendar";
+
 
 interface Article {
   id: string;
   title: string;
-  content?: string;
+  content: string;
   tldr: string;
   topics: string[];
   source: {
@@ -19,6 +21,7 @@ interface Article {
   status: string;
   inNewsletterQueue: boolean;
   createdAt: string;
+  updatedAt: string;
   draftLink: string;
   author?: {
     id: string;
@@ -78,9 +81,12 @@ export default function ContentPilotDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [gatheringIntelligence, setGatheringIntelligence] = useState(false);
-  const [activeView, setActiveView] = useState<'overview' | 'articles' | 'newsletter' | 'topics' | 'sources' | 'settings' | 'automation'>('overview');
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedDate, setSelectedDate] = useState('');
+
+  const [activeView, setActiveView] = useState<'overview' | 'articles' | 'newsletter' | 'topics' | 'sources' | 'settings' | 'automation'>('overview');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [articlesCount, setArticlesCount] = useState<Record<string, number>>({});
 
   const [topics, setTopics] = useState<Topic[]>([]);
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
@@ -90,6 +96,32 @@ export default function ContentPilotDashboard() {
   const [sources, setSources] = useState<Source[]>([]);
   const [newSource, setNewSource] = useState({ name: '', url: '', type: 'URL' as 'URL' | 'RSS' | 'API' });
   const [isSubmittingSource, setIsSubmittingSource] = useState(false);
+
+  // Subscriber management state
+  const [newSubscriber, setNewSubscriber] = useState({ name: '', email: '' });
+  const [isSubmittingSubscriber, setIsSubmittingSubscriber] = useState(false);
+
+  // Article editing state
+  const [editingArticle, setEditingArticle] = useState<FullArticle | null>(null);
+  const [isSavingArticle, setIsSavingArticle] = useState(false);
+
+  // URL parameter handling for article navigation
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const articleId = urlParams.get('articleId');
+      
+      if (articleId && brief?.articles && brief.articles.length > 0) {
+        const targetArticle = brief.articles.find((article: Article) => article.id === articleId);
+        if (targetArticle) {
+          setSelectedArticle(targetArticle as FullArticle);
+          setActiveView('articles');
+          // Clean up URL
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
+      }
+    }
+  }, [brief?.articles]);
 
   // Toast notification state
   const [toast, setToast] = useState<{
@@ -105,6 +137,23 @@ export default function ContentPilotDashboard() {
     setToast({ show: true, message, type });
     setTimeout(() => setToast({ show: false, message: '', type: 'info' }), 5000);
   };
+
+  // Calculate articles count by date
+  const calculateArticlesCount = useCallback((articles: Article[]) => {
+    const count: Record<string, number> = {};
+    articles.forEach(article => {
+      const date = new Date(article.createdAt).toISOString().split('T')[0];
+      count[date] = (count[date] || 0) + 1;
+    });
+    return count;
+  }, []);
+
+  // Update articles count when brief changes
+  useEffect(() => {
+    if (brief?.articles) {
+      setArticlesCount(calculateArticlesCount(brief.articles));
+    }
+  }, [brief?.articles, calculateArticlesCount]);
 
   const loadInitialData = useCallback(async () => {
     try {
@@ -189,6 +238,137 @@ export default function ContentPilotDashboard() {
     }
   };
 
+  const handleCreateSubscriber = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!newSubscriber.email.trim()) return;
+
+    setIsSubmittingSubscriber(true);
+    try {
+      const response = await fetch('/api/contentpilot/subscribers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newSubscriber),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to add subscriber');
+      }
+
+      const createdSubscriber = await response.json();
+      setSubscribers([createdSubscriber, ...subscribers]);
+      setNewSubscriber({ name: '', email: '' });
+      showToast('✅ Subscriber added successfully!', 'success');
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : "Failed to add subscriber", 'error');
+    } finally {
+      setIsSubmittingSubscriber(false);
+    }
+  };
+
+  const handleDeleteSubscriber = async (subscriberId: string) => {
+    if (!confirm('Are you sure you want to remove this subscriber?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/contentpilot/subscribers/${subscriberId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to delete subscriber');
+      }
+
+      setSubscribers(subscribers.filter(subscriber => subscriber.id !== subscriberId));
+      showToast('✅ Subscriber removed successfully!', 'success');
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : "Failed to remove subscriber", 'error');
+    }
+  };
+
+  const handleToggleNewsletter = async (articleId: string, currentStatus: boolean) => {
+    try {
+      const response = await fetch(`/api/contentpilot/articles/${articleId}/newsletter`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ inNewsletterQueue: !currentStatus }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to update newsletter status');
+      }
+
+      // Update the article in the brief
+      if (brief) {
+        const updatedArticles = brief.articles.map(article => 
+          article.id === articleId 
+            ? { ...article, inNewsletterQueue: !currentStatus }
+            : article
+        );
+        setBrief({ ...brief, articles: updatedArticles });
+      }
+
+      // Update selected article if it's the one being modified
+      if (selectedArticle && selectedArticle.id === articleId) {
+        setSelectedArticle({ ...selectedArticle, inNewsletterQueue: !currentStatus });
+      }
+
+      showToast(
+        !currentStatus 
+          ? '✅ Article added to newsletter queue!' 
+          : '✅ Article removed from newsletter queue!', 
+        'success'
+      );
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : "Failed to update newsletter status", 'error');
+    }
+  };
+
+  const handleSaveArticle = async (updatedArticle: FullArticle) => {
+    setIsSavingArticle(true);
+    try {
+      const response = await fetch(`/api/contentpilot/articles/${updatedArticle.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: updatedArticle.title,
+          content: updatedArticle.content,
+          tldr: updatedArticle.tldr,
+          topics: updatedArticle.topics,
+          status: updatedArticle.status,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to save article');
+      }
+
+      const savedArticle = await response.json();
+
+      // Update the article in the brief
+      if (brief) {
+        const updatedArticles = brief.articles.map(article => 
+          article.id === updatedArticle.id ? savedArticle : article
+        );
+        setBrief({ ...brief, articles: updatedArticles });
+      }
+
+      // Update selected article
+      setSelectedArticle(savedArticle);
+      setEditingArticle(null);
+
+      showToast('✅ Article saved successfully!', 'success');
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : "Failed to save article", 'error');
+    } finally {
+      setIsSavingArticle(false);
+    }
+  };
+
   const handleGatherIntelligence = async () => {
     try {
       setGatheringIntelligence(true);
@@ -222,12 +402,19 @@ export default function ContentPilotDashboard() {
     }
   };
 
-  const filteredArticles = brief?.articles.filter(article => 
-    searchQuery === '' || 
-    article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    article.tldr.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    article.topics.some(topic => topic.toLowerCase().includes(searchQuery.toLowerCase()))
-  ) || [];
+  const filteredArticles = brief?.articles.filter(article => {
+    // Search query filter
+    const matchesSearch = searchQuery === '' || 
+      article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      article.tldr.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      article.topics.some(topic => topic.toLowerCase().includes(searchQuery.toLowerCase()));
+    
+    // Date filter
+    const matchesDate = selectedDate === '' || 
+      new Date(article.createdAt).toISOString().split('T')[0] === selectedDate;
+    
+    return matchesSearch && matchesDate;
+  }) || [];
 
   const newsletterArticles = brief?.articles.filter(article => article.inNewsletterQueue) || [];
 
@@ -332,6 +519,132 @@ export default function ContentPilotDashboard() {
   }
 
   const renderMainContent = () => {
+    if (editingArticle) {
+      return (
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-white rounded-xl shadow-sm p-8">
+            <div className="mb-8">
+              <button 
+                onClick={() => setEditingArticle(null)}
+                className="text-gray-500 hover:text-gray-700 mb-6 flex items-center font-medium"
+              >
+                ← Cancel Editing
+              </button>
+              <h1 className="text-3xl font-bold text-gray-900 mb-4">Edit Article</h1>
+            </div>
+
+            <div className="space-y-6">
+              {/* Title */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Title
+                </label>
+                <input
+                  type="text"
+                  value={editingArticle.title}
+                  onChange={(e) => setEditingArticle({ ...editingArticle, title: e.target.value })}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg font-semibold"
+                  placeholder="Article title..."
+                />
+              </div>
+
+              {/* TL;DR */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  TL;DR Summary
+                </label>
+                <textarea
+                  value={editingArticle.tldr}
+                  onChange={(e) => setEditingArticle({ ...editingArticle, tldr: e.target.value })}
+                  rows={3}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Brief summary (2-3 sentences)..."
+                />
+              </div>
+
+              {/* Status */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Status
+                </label>
+                <select
+                  value={editingArticle.status}
+                  onChange={(e) => setEditingArticle({ ...editingArticle, status: e.target.value })}
+                  className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="DRAFT">Draft</option>
+                  <option value="PUBLISHED">Published</option>
+                  <option value="ARCHIVED">Archived</option>
+                </select>
+              </div>
+
+              {/* Topics */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Topics
+                </label>
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {editingArticle.topics.map((topic) => (
+                    <span 
+                      key={topic} 
+                      className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium"
+                    >
+                      #{topic}
+                      <button
+                        onClick={() => setEditingArticle({
+                          ...editingArticle,
+                          topics: editingArticle.topics.filter(t => t !== topic)
+                        })}
+                        className="ml-2 text-blue-600 hover:text-blue-800"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Content */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Article Content
+                </label>
+                <textarea
+                  value={editingArticle.content}
+                  onChange={(e) => setEditingArticle({ ...editingArticle, content: e.target.value })}
+                  rows={20}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm"
+                  placeholder="Write your article content here..."
+                />
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center justify-between pt-6 border-t border-gray-200">
+                <div className="text-sm text-gray-500">
+                  Last updated: {new Date(editingArticle.updatedAt).toLocaleDateString()}
+                </div>
+                <div className="flex space-x-4">
+                  <button
+                    onClick={() => setEditingArticle(null)}
+                    className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => handleSaveArticle(editingArticle)}
+                    disabled={isSavingArticle}
+                    className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-blue-400 font-medium transition-colors"
+                  >
+                    {isSavingArticle ? 'Saving...' : 'Save Changes'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     if (selectedArticle) {
       return (
         <div className="max-w-4xl mx-auto">
@@ -381,10 +694,16 @@ export default function ContentPilotDashboard() {
             </div>
 
             <div className="flex items-center space-x-4 mt-12 pt-8 border-t border-gray-200">
-              <button className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition-colors">
+              <button 
+                onClick={() => setEditingArticle(selectedArticle)}
+                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition-colors"
+              >
                 ✏️ Edit Article
               </button>
-              <button className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-colors">
+              <button 
+                onClick={() => handleToggleNewsletter(selectedArticle.id, selectedArticle.inNewsletterQueue)}
+                className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-colors"
+              >
                 {selectedArticle.inNewsletterQueue ? '📤 Remove from Newsletter' : '📬 Add to Newsletter'}
               </button>
             </div>
@@ -482,68 +801,100 @@ export default function ContentPilotDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-3xl font-bold text-gray-900">All Articles</h2>
-                <p className="text-gray-600 mt-1">{filteredArticles.length} articles found</p>
-              </div>
-              <input
-                type="text"
-                placeholder="Search articles..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="px-4 py-3 border border-gray-300 rounded-lg w-80 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
-
-            {filteredArticles.length > 0 ? (
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {filteredArticles.map((article) => (
-                  <div
-                    key={article.id}
-                    onClick={() => setSelectedArticle(article as FullArticle)}
-                    className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 cursor-pointer hover:shadow-md transition-shadow"
-                  >
-                    <div className="flex items-start justify-between mb-4">
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(article.status)}`}>
-                        {article.status}
-                      </span>
-                      {article.inNewsletterQueue && (
-                        <span className="text-green-600 text-lg">📬</span>
-                      )}
-                    </div>
-
-                    <h3 className="font-semibold text-gray-900 mb-3 line-clamp-2 leading-tight">{article.title}</h3>
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-3">{article.tldr}</p>
-
-                    <div className="flex flex-wrap gap-1 mb-4">
-                      {article.topics.slice(0, 2).map((topic) => (
-                        <span key={topic} className="px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs">
-                          #{topic}
-                        </span>
-                      ))}
-                      {article.topics.length > 2 && (
-                        <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs">
-                          +{article.topics.length - 2}
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="flex items-center justify-between text-sm text-gray-500">
-                      <span className="font-medium">{article.source.name}</span>
-                      <span>{format(new Date(article.createdAt), "MMM d")}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center">
-                <div className="text-6xl mb-4">🔍</div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                  {searchQuery ? 'No articles found' : 'No articles yet'}
-                </h3>
-                <p className="text-gray-600">
-                  {searchQuery ? 'Try adjusting your search terms' : 'Gather intelligence to see your first articles'}
+                <p className="text-gray-600 mt-1">
+                  {filteredArticles.length} articles found
+                  {selectedDate && (
+                    <span className="ml-2 text-blue-600">
+                      • Filtered by {format(new Date(selectedDate), "MMM d, yyyy")}
+                    </span>
+                  )}
                 </p>
               </div>
-            )}
+              <div className="flex items-center space-x-4">
+                {selectedDate && (
+                  <button
+                    onClick={() => setSelectedDate('')}
+                    className="px-3 py-2 text-sm bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors"
+                  >
+                    Clear Date Filter
+                  </button>
+                )}
+                <input
+                  type="text"
+                  placeholder="Search articles..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="px-4 py-3 border border-gray-300 rounded-lg w-80 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+            </div>
+
+            {/* Articles and Calendar Layout */}
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+              {/* Articles Grid - Left Side */}
+              <div className="lg:col-span-3">
+                {filteredArticles.length > 0 ? (
+                  <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    {filteredArticles.map((article) => (
+                      <div
+                        key={article.id}
+                        onClick={() => setSelectedArticle(article as FullArticle)}
+                        className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 cursor-pointer hover:shadow-md transition-shadow"
+                      >
+                        <div className="flex items-start justify-between mb-4">
+                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(article.status)}`}>
+                            {article.status}
+                          </span>
+                          {article.inNewsletterQueue && (
+                            <span className="text-green-600 text-lg">📬</span>
+                          )}
+                        </div>
+
+                        <h3 className="font-semibold text-gray-900 mb-3 line-clamp-2 leading-tight">{article.title}</h3>
+                        <p className="text-gray-600 text-sm mb-4 line-clamp-3">{article.tldr}</p>
+
+                        <div className="flex flex-wrap gap-1 mb-4">
+                          {article.topics.slice(0, 2).map((topic) => (
+                            <span key={topic} className="px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs">
+                              #{topic}
+                            </span>
+                          ))}
+                          {article.topics.length > 2 && (
+                            <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs">
+                              +{article.topics.length - 2}
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="flex items-center justify-between text-sm text-gray-500">
+                          <span className="font-medium">{article.source.name}</span>
+                          <span>{format(new Date(article.createdAt), "MMM d")}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center">
+                    <div className="text-6xl mb-4">🔍</div>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                      {searchQuery || selectedDate ? 'No articles found' : 'No articles yet'}
+                    </h3>
+                    <p className="text-gray-600">
+                      {searchQuery || selectedDate ? 'Try adjusting your search terms or date filter' : 'Gather intelligence to see your first articles'}
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* Calendar Sidebar - Right Side */}
+              <div className="lg:col-span-1">
+                <Calendar 
+                  onDateSelect={setSelectedDate}
+                  selectedDate={selectedDate}
+                  articlesCount={articlesCount}
+                />
+              </div>
+            </div>
           </div>
         );
 
@@ -595,19 +946,70 @@ export default function ContentPilotDashboard() {
             </div>
 
             {/* Mailing List (Right Column) */}
-            <div className="col-span-1">
+            <div className="col-span-1 space-y-6">
+              {/* Add Subscriber Form */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Add Subscriber</h3>
+                <form onSubmit={handleCreateSubscriber} className="space-y-4">
+                  <div>
+                    <input
+                      type="text"
+                      placeholder="Name (optional)"
+                      value={newSubscriber.name}
+                      onChange={(e) => setNewSubscriber({ ...newSubscriber, name: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                    />
+                  </div>
+                  <div>
+                    <input
+                      type="email"
+                      placeholder="Email address *"
+                      value={newSubscriber.email}
+                      onChange={(e) => setNewSubscriber({ ...newSubscriber, email: e.target.value })}
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={isSubmittingSubscriber || !newSubscriber.email.trim()}
+                    className="w-full px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 disabled:bg-blue-400 transition-colors text-sm"
+                  >
+                    {isSubmittingSubscriber ? 'Adding...' : '+ Add Subscriber'}
+                  </button>
+                </form>
+              </div>
+
+              {/* Mailing List */}
               <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Mailing List ({subscribers.length})</h3>
-                <div className="space-y-3">
-                  {subscribers.map((subscriber) => (
-                    <div key={subscriber.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <div>
-                        <p className="font-medium text-sm text-gray-800">{subscriber.name || 'Anonymous'}</p>
-                        <p className="text-xs text-gray-500">{subscriber.email}</p>
+                {subscribers.length > 0 ? (
+                  <div className="space-y-3">
+                    {subscribers.map((subscriber) => (
+                      <div key={subscriber.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-sm text-gray-800 truncate">{subscriber.name || 'Anonymous'}</p>
+                          <p className="text-xs text-gray-500 truncate">{subscriber.email}</p>
+                        </div>
+                        <button
+                          onClick={() => handleDeleteSubscriber(subscriber.id)}
+                          className="ml-2 text-red-500 hover:text-red-700 p-1 rounded transition-colors"
+                          title="Remove subscriber"
+                        >
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                          </svg>
+                        </button>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    <div className="text-4xl mb-2">📧</div>
+                    <p className="text-sm">No subscribers yet</p>
+                    <p className="text-xs mt-1">Add your first subscriber above</p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
