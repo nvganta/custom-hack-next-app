@@ -19,6 +19,18 @@ interface IntelligenceSummary {
   date: string;
 }
 
+// Helper function to get base URL
+function getBaseUrl(request?: NextRequest): string {
+  if (request) {
+    const host = request.headers.get('host');
+    const protocol = request.headers.get('x-forwarded-proto') || 'http';
+    return `${protocol}://${host}`;
+  }
+  
+  return process.env.NEXT_PUBLIC_BASE_URL || 
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3001');
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { summary, userEmail } = await request.json();
@@ -29,6 +41,8 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+
+    const baseUrl = getBaseUrl(request);
 
     // Generate one-liners for each article
     const articleOneLiners = summary.articles.map((article: Article) => {
@@ -41,8 +55,8 @@ export async function POST(request: NextRequest) {
 
     // Create email content
     const emailSubject = `🤖 ContentPilot Intelligence Report - ${summary.totalArticles} New Articles`;
-    const emailHtml = createIntelligenceSummaryEmailHtml(summary, articleOneLiners);
-    const emailText = createIntelligenceSummaryEmailText(summary, articleOneLiners);
+    const emailHtml = createIntelligenceSummaryEmailHtml(summary, articleOneLiners, baseUrl);
+    const emailText = createIntelligenceSummaryEmailText(summary, articleOneLiners, baseUrl);
 
     // Send email via Resend
     const emailResult = await resend.emails.send({
@@ -60,7 +74,7 @@ export async function POST(request: NextRequest) {
       articlesProcessed: summary.totalArticles,
     });
 
-  } catch {
+  } catch (error) {
     console.error('Error sending intelligence summary:', error);
     return NextResponse.json(
       { error: 'Failed to send intelligence summary' },
@@ -87,7 +101,7 @@ function generateOneLiner(article: Article): string {
   }
 }
 
-function createIntelligenceSummaryEmailHtml(summary: IntelligenceSummary, articles: any[]): string {
+function createIntelligenceSummaryEmailHtml(summary: IntelligenceSummary, articles: any[], baseUrl: string): string {
   const articlesHtml = articles.map((article, index) => `
     <tr style="border-bottom: 1px solid #e5e7eb;">
       <td style="padding: 16px 8px; vertical-align: top; width: 40px;">
@@ -107,7 +121,7 @@ function createIntelligenceSummaryEmailHtml(summary: IntelligenceSummary, articl
             `<span style="display: inline-block; background: #f3f4f6; color: #374151; padding: 2px 8px; border-radius: 12px; font-size: 12px; margin-right: 4px;">#${topic}</span>`
           ).join('')}
         </div>
-        <a href="http://localhost:3000/contentpilot/articles?articleId=${article.id}" 
+        <a href="${baseUrl}/contentpilot/articles?articleId=${article.id}" 
            style="color: #3b82f6; text-decoration: none; font-weight: 500; font-size: 14px;">
           📖 Read Full Article →
         </a>
@@ -163,11 +177,11 @@ function createIntelligenceSummaryEmailHtml(summary: IntelligenceSummary, articl
       <!-- Navigation -->
       <div style="margin-top: 24px; padding: 20px; background: #f3f4f6; border-radius: 8px; text-align: center;">
         <p style="margin: 0 0 16px 0; color: #374151; font-size: 16px;">Ready to dive deeper?</p>
-        <a href="http://localhost:3000/contentpilot/articles" 
+        <a href="${baseUrl}/contentpilot/articles" 
            style="display: inline-block; background: #3b82f6; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 500; margin-right: 12px;">
           📚 View All Articles
         </a>
-        <a href="http://localhost:3000/contentpilot/newsletter" 
+        <a href="${baseUrl}/contentpilot/newsletter" 
            style="display: inline-block; background: #10b981; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 500;">
           📬 Create Newsletter
         </a>
@@ -183,12 +197,12 @@ function createIntelligenceSummaryEmailHtml(summary: IntelligenceSummary, articl
   `;
 }
 
-function createIntelligenceSummaryEmailText(summary: IntelligenceSummary, articles: any[]): string {
+function createIntelligenceSummaryEmailText(summary: IntelligenceSummary, articles: any[], baseUrl: string): string {
   const articlesText = articles.map((article, index) => `
 ${index + 1}. ${article.title}
    ${article.oneLiner}
    Topics: ${article.topics.slice(0, 3).join(', ')}
-   Read more: http://localhost:3000/contentpilot/articles?articleId=${article.id}
+   Read more: ${baseUrl}/contentpilot/articles?articleId=${article.id}
   `).join('\n');
 
   return `
@@ -203,8 +217,8 @@ ARTICLE HIGHLIGHTS:
 ${articlesText}
 
 QUICK ACTIONS:
-- View all articles: http://localhost:3000/contentpilot/articles
-- Create newsletter: http://localhost:3000/contentpilot/newsletter
+- View all articles: ${baseUrl}/contentpilot/articles
+- Create newsletter: ${baseUrl}/contentpilot/newsletter
 
 ---
 This intelligence report was generated by your ContentPilot AI Mini Agent

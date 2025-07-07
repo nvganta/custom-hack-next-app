@@ -11,23 +11,23 @@ export class ContentPilotService {
   // Register the ContentPilot agent
   async registerAgent() {
     try {
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 
+        (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3001');
+      
       const response = await fetch('/api/contentpilot/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: "ContentPilot",
-          endpoint: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/contentpilot`,
-          version: "1.0.0",
+          name: 'ContentPilot',
+          endpoint: `${baseUrl}/api/contentpilot`,
+          version: '1.0.0',
           capabilities: [
-            "content_generation",
-            "content_summarization", 
-            "content_gathering",
-            "newsletter_automation",
-            "editorial_workflow",
-            "content_intelligence",
-            "brief_generation",
-            "topic_analysis"
-          ],
+            'content discovery',
+            'content generation', 
+            'content summarization',
+            'newsletter automation',
+            'editorial workflow'
+          ]
         }),
       });
 

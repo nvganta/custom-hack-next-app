@@ -1,0 +1,21 @@
+{
+  "functions": {
+    "src/app/api/contentpilot/gather-intelligence/route.ts": {
+      "maxDuration": 300
+    },
+    "src/app/api/contentpilot/intelligence-summary/route.ts": {
+      "maxDuration": 60
+    },
+    "src/app/api/contentpilot/newsletter/send/route.ts": {
+      "maxDuration": 120
+    }
+  },
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "build": {
+    "env": {
+      "NEXT_TELEMETRY_DISABLED": "1"
+    }
+  }
+} 

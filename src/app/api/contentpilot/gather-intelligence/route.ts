@@ -215,7 +215,10 @@ export async function POST() {
         };
 
         // Send intelligence summary email
-        const emailResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/contentpilot/intelligence-summary`, {
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 
+          (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3001');
+        
+        const emailResponse = await fetch(`${baseUrl}/api/contentpilot/intelligence-summary`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

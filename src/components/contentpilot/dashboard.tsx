@@ -5,7 +5,7 @@ import { ContentPilotService } from "@/lib/contentpilot/service";
 import { format } from "date-fns";
 import SettingsPage from "./settings-page";
 import AutomationSettings from "./automation-settings";
-import { Calendar } from "./calendar";
+import Calendar from "./calendar";
 
 
 interface Article {
@@ -891,7 +891,7 @@ export default function ContentPilotDashboard() {
                 <Calendar 
                   onDateSelect={setSelectedDate}
                   selectedDate={selectedDate}
-                  articlesCount={articlesCount}
+                  articleCounts={articlesCount}
                 />
               </div>
             </div>
