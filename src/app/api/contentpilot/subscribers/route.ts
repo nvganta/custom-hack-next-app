@@ -17,12 +17,14 @@ export async function GET() {
     });
 
     return NextResponse.json(subscribers);
-  } catch {
+  } catch (error) {
     console.error('Error fetching subscribers:', error);
     return NextResponse.json(
       { error: 'Failed to fetch subscribers' },
       { status: 500 }
     );
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
@@ -70,5 +72,7 @@ export async function POST(request: NextRequest) {
       { error: 'Failed to create subscriber' },
       { status: 500 }
     );
+  } finally {
+    await prisma.$disconnect();
   }
 } 
