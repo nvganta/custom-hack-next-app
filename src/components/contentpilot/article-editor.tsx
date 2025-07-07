@@ -60,7 +60,7 @@ export default function ArticleEditor({
       setPreviewMode(false);
       setShowDeleteConfirm(false);
     }
-  }, [article?.id]);
+  }, [article]);
 
   if (!article) {
     return (

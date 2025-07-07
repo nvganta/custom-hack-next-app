@@ -144,7 +144,7 @@ ContentPilot AI - Autonomous Content Intelligence
   `.trim();
 }
 
-function createNewsletterSentEmailHtml(data: any, baseUrl: string): string {
+function createNewsletterSentEmailHtml(data: any, _baseUrl: string): string {
   return `
     <!DOCTYPE html>
     <html>
@@ -175,7 +175,7 @@ function createNewsletterSentEmailHtml(data: any, baseUrl: string): string {
   `;
 }
 
-function createNewsletterSentEmailText(data: any, baseUrl: string): string {
+function createNewsletterSentEmailText(data: any, _baseUrl: string): string {
   return `
 Newsletter Sent: ${data.title}
 
