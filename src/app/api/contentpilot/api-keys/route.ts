@@ -14,19 +14,30 @@ function generateApiKey(): string {
 // GET /api/contentpilot/api-keys - List API keys (admin only)
 export async function GET() {
   try {
-    const apiKeys = await prisma.api_key.findMany({
+    const apiKeysSettings = await prisma.setting.findMany({
+      where: {
+        key: {
+          startsWith: 'api_key_',
+        },
+      },
       select: {
-        id: true,
-        name: true,
-        keyPreview: true,
+        key: true,
         createdAt: true,
-        lastUsed: true,
+        updatedAt: true,
       },
       orderBy: { createdAt: 'desc' },
     });
 
+    const apiKeys = apiKeysSettings.map(setting => ({
+      id: setting.key,
+      name: setting.key.replace('api_key_', '').replace(/_/g, ' '),
+      keyPreview: 'cp_... (hidden)',
+      createdAt: setting.createdAt,
+      lastUsed: setting.updatedAt,
+    }));
+
     return NextResponse.json({ apiKeys });
-  } catch {
+  } catch (error) {
     console.error('Error fetching API keys:', error);
     return NextResponse.json(
       { error: 'Failed to fetch API keys' },
@@ -38,7 +49,7 @@ export async function GET() {
 // POST /api/contentpilot/api-keys - Generate new API key
 export async function POST(request: NextRequest) {
   try {
-    const { name, description } = await request.json();
+    const { name } = await request.json();
     
     if (!name) {
       return NextResponse.json(
@@ -50,28 +61,23 @@ export async function POST(request: NextRequest) {
     const apiKey = generateApiKey();
     const keyId = `api_key_${name.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
 
-    // Store the API key
-    await prisma.setting.create({
-      data: {
+    // Upsert the API key in the settings
+    const setting = await prisma.setting.upsert({
+      where: { key: keyId },
+      update: { value: apiKey },
+      create: {
         key: keyId,
-        value: JSON.stringify({
-          apiKey,
-          name,
-          description: description || '',
-          createdAt: new Date().toISOString(),
-          isActive: true,
-        }),
+        value: apiKey,
       },
     });
 
     return NextResponse.json({
       success: true,
-      apiKey,
+      key: setting.value,
       name,
-      keyId: keyId.replace('api_key_', ''),
-      message: 'API key generated successfully. Store it securely - you won\'t be able to see it again.',
+      message: 'API key generated successfully. Store it securely.',
     });
-  } catch {
+  } catch (error) {
     console.error('Error generating API key:', error);
     return NextResponse.json(
       { error: 'Failed to generate API key' },
@@ -105,7 +111,7 @@ export async function DELETE(request: NextRequest) {
       success: true,
       message: 'API key revoked successfully',
     });
-  } catch {
+  } catch (error) {
     console.error('Error revoking API key:', error);
     return NextResponse.json(
       { error: 'Failed to revoke API key' },
