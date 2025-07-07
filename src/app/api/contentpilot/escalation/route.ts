@@ -224,7 +224,7 @@ export async function GET(request: NextRequest) {
       }
     });
 
-  } catch {
+  } catch (error) {
     await logger.error('Error getting escalations', 'escalation_api', {}, error as Error);
     return NextResponse.json(
       { error: 'Failed to get escalations' },
@@ -280,7 +280,7 @@ export async function POST(request: NextRequest) {
       message: 'Escalation created successfully'
     });
 
-  } catch {
+  } catch (error) {
     await logger.error('Error creating escalation', 'escalation_api', {}, error as Error);
     return NextResponse.json(
       { error: 'Failed to create escalation' },
@@ -377,7 +377,7 @@ export async function PUT(request: NextRequest) {
       message: 'Escalation updated successfully'
     });
 
-  } catch {
+  } catch (error) {
     await logger.error('Error updating escalation', 'escalation_api', {}, error as Error);
     return NextResponse.json(
       { error: 'Failed to update escalation' },
@@ -468,4 +468,4 @@ export async function flagQualityReview(
 }
 
 // Export the utility functions for external use
-export { createEscalationInternal as createEscalation, flagLowConfidence, escalateError, flagQualityReview }; 
+export { createEscalationInternal as createEscalation }; 
